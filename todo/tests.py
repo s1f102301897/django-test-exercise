@@ -6,13 +6,13 @@ from todo.models import Task
 # Create your tests here.
 
 
-class SampleTestCase(TestCase): 
-    def test_sample1(self): 
+class SampleTestCase(TestCase):
+    def test_sample1(self):
         self.assertEqual(1 + 2, 3)
 
 
-class TaskModelTestCase(TestCase): 
-    def test_create_task1(self): 
+class TaskModelTestCase(TestCase):
+    def test_create_task1(self):
         due = timezone.make_aware(datetime(2024, 6, 30, 23, 59, 59))
         task = Task(title='task1', due_at=due)
         task.save()
@@ -22,7 +22,7 @@ class TaskModelTestCase(TestCase):
         self.assertFalse(task.completed)
         self.assertEqual(task.due_at, due)
 
-    def test_create_task2(self): 
+    def test_create_task2(self):
         task = Task(title='task2')
         task.save()
 
@@ -31,7 +31,7 @@ class TaskModelTestCase(TestCase):
         self.assertFalse(task.completed)
         self.assertEqual(task.due_at, None)
 
-    def test_is_overdue_future(self): 
+    def test_is_overdue_future(self):
         due = timezone.make_aware(datetime(2024, 6, 30, 23, 59, 59))
         current = timezone.make_aware(datetime(2024, 6, 30, 0, 0, 0))
         task = Task(title='task1', due_at=due)
@@ -39,33 +39,25 @@ class TaskModelTestCase(TestCase):
     
         self.assertFalse(task.is_overdue(current))
 
-    def test_is_overdue_past(self): 
+    def test_is_overdue_past(self):
         due = timezone.make_aware(datetime(2024, 6, 30, 23, 59, 59))
         current = timezone.make_aware(datetime(2024, 7, 1, 0, 0, 0))
-        task = Task(title = 'task1', due_at=due)
+        task = Task(title='task1', due_at=due)
         task.save()
     
         self.assertTrue(task.is_overdue(current))
 
-    def test_is_overdue_none(self): 
-        due = timezone.make_aware(datetime(2024, 6, 30, 23, 59, 59))
+    def test_is_overdue_none(self):
         current = timezone.make_aware(datetime(2024, 7, 1, 0, 0, 0))
-        task = Task(title = 'task1',due_at=due)
-        task.save()
-    
-        self.assertTrue(task.is_overdue(current))
-
-    def test_is_overdue_none(self): 
-        current = timezone.make_aware(datetime(2024, 7, 1, 0, 0, 0))
-        task = Task(title = 'task1', due_at=None)
+        task = Task(title='task1', due_at=None)
         task.save()
     
         self.assertFalse(task.is_overdue(current))
 
 
-class TodoViewTestCase(TestCase): 
+class TodoViewTestCase(TestCase):
 
-    def test_index_get(self): 
+    def test_index_get(self):
         client = Client()
         response = client.get('/')
 
@@ -73,7 +65,7 @@ class TodoViewTestCase(TestCase):
         self.assertEqual(response.templates[0].name, 'todo/index.html')
         self.assertEqual(len(response.context['tasks']), 0)
 
-    def test_index_post(self): 
+    def test_index_post(self):
         client = Client()
         data = {'title':'Test Task', 'due_at':'2024-06-30 23:59:59'}
         response = client.post('/', data)
